@@ -1,0 +1,29 @@
+name: Build Unity Project for WebGL
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: Build for WebGL
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-WebGL
+
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: WebGL
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Build-WebGL
+          path: build # Specify the correct build path

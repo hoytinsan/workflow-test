@@ -1,0 +1,40 @@
+name: Build Unity Project
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        branch: [ball-fall, math-it]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ matrix.branch }}
+
+      - name: Set up Unity
+        uses: game-ci/unity-setup@v2
+        with:
+          unityVersion: 2023.2.10f1 # Specify the Unity version you are using
+
+      - name: Activate Unity license
+        run: |
+          echo "${{ secrets.UNITY_LICENSE }}" > Unity_v2019.x.ulf
+          mkdir -p ~/.local/share/unity3d/Unity/
+          mv Unity_v2019.x.ulf ~/.local/share/unity3d/Unity/
+
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        with:
+          targetPlatform: WebGL # Specify the target platform (e.g., WebGL, StandaloneWindows64)
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build-${{ matrix.branch }}
+          path: build/WebGL # Specify the path to your build output directory
