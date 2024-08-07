@@ -6,7 +6,7 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-    checklicense:
+  checklicense:
     name: Check for UNITY_LICENSE in GitHub Secrets
     runs-on: ubuntu-latest
     outputs:
